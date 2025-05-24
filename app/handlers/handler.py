@@ -5,22 +5,26 @@ import logging
 
 from aiogram import F, Router
 from aiogram.types import Message, FSInputFile
-from aiogram.filters import CommandStart
+from aiogram.filters import CommandStart, Command
 
 import app.keyboards.reply_keyboard as rkb
 import app.keyboards.inline_keyboard as ikb
+
+import app.database.requests as rq
 
 router = Router()
 
 
 @router.message(CommandStart())
 async def st_start(message: Message):
+    await rq.set_user(message.from_user.id)
     await message.answer('Чтобы подобрать квартиру, нажмите кнопку снизу!', reply_markup=rkb.selection_of_apartaments)
+
 
 
 @router.message(F.text == 'Подобрать квартиру')
 async def start_select_apartaments(message: Message):
-    await message.answer('Выберите, способ подбора:', reply_markup=ikb.choice_selection)
+    await message.answer('Выберите, способ подбора:', reply_markup=await ikb.categories())
     
 
 
