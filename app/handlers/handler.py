@@ -24,7 +24,7 @@ async def st_start(message: Message):
 
 @router.message(F.text == 'Подобрать квартиру')
 async def start_select_apartaments(message: Message):
-    await message.answer('Выберите, способ подбора:', reply_markup=await ikb.categories())
+    await message.answer('Выберите, способ подбора:', reply_markup = ikb.choice_selection)
     
 
 
@@ -32,15 +32,15 @@ async def start_select_apartaments(message: Message):
 async def about_pg(message: Message):
     chat_id = message.chat.id
 
-    if not os.path.exists(PDF_FILE_PATH):
-        logging.error(f"Файл не найден по пути: {PDF_FILE_PATH}")
+    if not os.path.exists("media/about_pg/presentation.pdf"):
+        logging.error(f"Файл не найден по пути: {"media/about_pg/presentation.pdf"}")
         await message.answer("Извините, файл презентации не найден на сервере.")
         return
 
     try:
         # --- ИЗМЕНИТЕ ЭТУ СТРОКУ ---
         # Создаем объект FSInputFile из пути к файлу
-        pdf_document = FSInputFile(PDF_FILE_PATH)
+        pdf_document = FSInputFile("media/about_pg/presentation.pdf")
         # --- Было: pdf_document = InputFile(PDF_FILE_PATH) ---
 
         await message.bot.send_document(

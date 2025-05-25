@@ -19,7 +19,7 @@ admin_router = Router()
 class AdminStates(StatesGroup):
     waiting_for_login = State()
     waiting_for_password = State()
-    waiting_for_house_name = State()
+
 
 
 @admin_router.message(Command('admin'))
@@ -49,26 +49,3 @@ async def process_password(message: Message, state: FSMContext):
     else:
         await message.answer('Неверный пароль. Попробуйте еще раз.')
         await state.finish()  
-
-@admin_router.callback_query(F.data == 'add_house')
-async def add_house_callback(callback: CallbackQuery, state: FSMContext):
-    await callback.message.answer("Введите название дома (категории), который хотите добавить:")
-    await state.set_state(AdminStates.waiting_for_house_name) # Устанавливаем новое состояние
-    await callback.answer() # Обязательно ответьте на CallbackQuery
-
-# НОВЫЙ ОБРАБОТЧИК: Обработка ввода названия дома (категории)
-@admin_router.message(AdminStates.waiting_for_house_name)
-async def process_new_house_name(message: Message, state: FSMContext):
-    house_name = message.text.strip() # Получаем введенное название
-    if not house_name:
-        await message.answer("Название дома не может быть пустым. Попробуйте еще раз.")
-        return
-
-    try:
-        await rq.add_category_to_db(house_name) # Вызываем функцию для добавления в БД
-        await message.answer(f"Дом (категория) '{house_name}' успешно добавлен!")
-    except Exception as e:
-        await message.answer(f"Произошла ошибка при добавлении дома: {e}")
-    finally:
-        await state.clear() # Сброс состояния
-        await message.answer("Что еще хотите сделать?", reply_markup=ikb.admin_keyboard) # Возвращаем админ-меню

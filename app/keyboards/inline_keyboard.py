@@ -3,7 +3,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from app.database.requests import get_categories
+from app.database.requests import get_houses, get_corp_house, get_floor_corp, get_apartament_floor
 
 choice_selection = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text='Визуальный подбор', callback_data='visual_selection')],
@@ -39,11 +39,36 @@ admin_keyboard = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text='Добавить квартиру', callback_data='add_apartament')]
 ])
 
-async def categories():
-    all_categories = await get_categories()
+async def houses():
+    all_houses = await get_houses()
     keyboard = InlineKeyboardBuilder()
-    for category in all_categories:
-        keyboard.add(InlineKeyboardButton(text=category.name, callback_data=f"category_{category.id}"))
+    for house in all_houses:
+        keyboard.add(InlineKeyboardButton(text=house.name, callback_data=f"house_{house.id}"))
     keyboard.add(InlineKeyboardButton(text='На главную', callback_data='to_main'))
     return keyboard.adjust(2).as_markup()
+    
+async def corps(house_id):
+    all_corps = await get_corp_house(house_id)
+    keyboard = InlineKeyboardBuilder()
+    for corp in all_corps:
+        keyboard.add(InlineKeyboardButton(text=corp.name, callback_data=f"corp_{corp.id}"))
+    keyboard.add(InlineKeyboardButton(text='На главную', callback_data='to_main'))
+    return keyboard.adjust(2).as_markup()
+
+async def floors(corp_id: int):
+    all_floors = await get_floor_corp(corp_id)
+    keyboard = InlineKeyboardBuilder()
+    for floor in all_floors:
+        keyboard.add(InlineKeyboardButton(text=f"Этаж {floor.number}", callback_data=f"floor_{floor.id}"))
+    keyboard.add(InlineKeyboardButton(text='На главную', callback_data='to_main'))
+    return keyboard.adjust(2).as_markup()
+    
+async def apartaments(floor_id: int):
+    all_apartaments = await get_apartament_floor(floor_id)
+    keyboard = InlineKeyboardBuilder()
+    for apartament in all_apartaments:
+        keyboard.add(InlineKeyboardButton(text=f"№{apartament.number}", callback_data=f"apartament_{apartament.id}"))
+    keyboard.add(InlineKeyboardButton(text='На главную', callback_data='to_main'))
+    return keyboard.adjust(2).as_markup()
+    
     
