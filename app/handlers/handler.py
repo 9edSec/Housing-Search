@@ -17,15 +17,15 @@ router = Router()
 
 @router.message(CommandStart())
 async def st_start(message: Message):
-    await rq.set_user(message.from_user.id)
-    await message.answer('Чтобы подобрать квартиру, нажмите кнопку снизу!', reply_markup=rkb.selection_of_apartaments)
-
-
-
-@router.message(F.text == 'Подобрать квартиру')
-async def start_select_apartaments(message: Message):
-    await message.answer('Выберите, способ подбора:', reply_markup = ikb.choice_selection)
+    await rq.set_user(message.from_user.id)  
+    await message.answer('Привет, успей купить квартиру мечты в ЖК Пушкино Град!\nОформите заявку на просмотр/презентацию квартиры по кнопке "Оформить заявку"!', reply_markup=rkb.main)
     
+
+
+@router.message(F.text == 'Мои промокоды')
+async def promo_code(message: Message):
+    photo = FSInputFile("media/navigation/promocode.png")
+    await message.answer_photo(photo=photo, caption='Ваш промокод для ИНДИВИДУАЛЬНЫХ ВЫГОДНЫХ УСЛОВИЙ')
 
 
 @router.message(F.text == 'О Пушкино Град')
