@@ -36,9 +36,14 @@ ADMIN_CHAT_ID = "1747118190" # !!! ОБЯЗАТЕЛЬНО ЗАМЕНИ НА СВ
 async def start_application_form( message: Message, state: FSMContext):
     await state.set_state(ApplicationStates.waiting_for_layout_option)
     await message.answer(
-        "📝 *Начинаем оформление заявки!*\n\n"
-        "Пожалуйста, выберите вариант планировки:"
-,reply_markup=ikb.select_layout_option_kb)
+        "📝 <b><i>Начинаем оформление заявки!</i></b>\n\n"
+        "Пожалуйста, <b>выберите вариант планировки</b>:\n\n"
+        "🏠 <b>Квартира-Линейка</b> — <i>Что это?</i>\n"
+        "Это когда <b>ВСЕ ОКНА</b> (и кухни, и комнат) выходят на <b>ОДНУ СТОРОНУ</b> дома.\n\n" # Добавил \n\n для разделения
+        "↔️ <b>Квартира-Распашонка</b> — <i>Что это?</i>\n" # Эмодзи, жирное название, курсив для вопроса
+        "Это когда <b>ОКНА</b> выходят на <b>ДВЕ ПРОТИВОПОЛОЖНЫЕ СТОРОНЫ</b> дома." # Жирное выделение ключевых слов
+        , parse_mode="HTML"
+        , reply_markup=ikb.select_layout_option_kb)
      # Закрываем уведомление о нажатии на кнопку
 
 @callback_router.callback_query(ApplicationStates.waiting_for_layout_option, F.data.startswith('apartment_'))
@@ -57,10 +62,10 @@ async def process_apartment(callback: CallbackQuery, state: FSMContext):
     await state.update_data(apartment_plan=apartment_name)
     await callback.answer()
     
-    await state.set_state(ApplicationStates.waiting_for_corp)
-    await callback.message.answer(f"Вы выбрали: {apartment_name}.\n\nОтлично! Теперь выберите корпус:",reply_markup=ikb.select_corp_kb ,parse_mode="Markdown")
+    await state.set_state(ApplicationStates.waiting_for_floor)
+    await callback.message.answer(f"Вы выбрали: {apartment_name}.\n\nОтлично! Теперь выберите этажность:",reply_markup=ikb.select_floor_kb ,parse_mode="Markdown")
 
-
+'''
 # 2. Обработчик для получения корпуса----------------------------------------------------------------------------------------------
 @callback_router.callback_query(ApplicationStates.waiting_for_corp, F.data.startswith('corp_'))
 async def process_corp(callback: CallbackQuery, state: FSMContext):
@@ -80,6 +85,7 @@ async def process_corp(callback: CallbackQuery, state: FSMContext):
     
     await state.set_state(ApplicationStates.waiting_for_floor)
     await callback.message.answer(f"Вы выбрали: {corp_name}.\n\nОтлично! Теперь выберите этажность:",reply_markup=ikb.select_floor_kb ,parse_mode="Markdown")
+'''
 
 # 3. Обработчик для получения этажа------------------------------------------------------------------------------------------------------------------------------
 @callback_router.callback_query(ApplicationStates.waiting_for_floor, F.data.startswith('floor_'))
@@ -183,7 +189,6 @@ async def process_phone(message: Message, state: FSMContext):
         f"📋 *Пожалуйста, подтвердите ваши данные:*\n\n"
         f"Имя: *{user_data.get('name', 'Не указано')}*\n"
         f"Телефон: `{user_data.get('phone', 'Не указан')}`\n"
-        f"Интересующий корпус: *{user_data.get('corp_number', 'Не указан')}*\n"
         f"Этажность: *{user_data.get('floor_number', 'Не указан')}*\n"
         f"Тип квартиры: *{user_data.get('apartment_type', 'Не указан')}*\n"
         f"Вариант планировки *{user_data.get('apartment_plan', 'Не указан')}*\n"
@@ -205,7 +210,6 @@ async def confirm_application(callback: CallbackQuery, state: FSMContext):
         f"Имя: *{user_data.get('name', 'Не указано')}*\n"
         f"Телефон: `{user_data.get('phone', 'Не указан')}`\n"
         f"-----------------------------------------\n"
-        f"Интересующий корпус: *{user_data.get('corp_number', 'Не указан')}*\n"
         f"Этажность: *{user_data.get('floor_number', 'Не указан')}*\n"
         f"Тип квартиры: *{user_data.get('apartment_type', 'Не указан')}*\n"
         f"Вариант планировки *{user_data.get('apartment_plan', 'Не указан')}*\n"

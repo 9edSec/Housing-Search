@@ -6,7 +6,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 select_layout_option_kb = InlineKeyboardMarkup(inline_keyboard=[
     
-    [InlineKeyboardButton(text='Квартира-линейка', callback_data='apartment_lineika')],
+    [InlineKeyboardButton(text='Квартира-"линейка"', callback_data='apartment_lineika')],
     [InlineKeyboardButton(text='Квартира-"распашонка"', callback_data='apartment_open')]
     
 ])
