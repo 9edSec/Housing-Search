@@ -12,7 +12,7 @@ from app.database.models import async_main
 async def main():
     await async_main()
     load_dotenv()
-    bot = Bot(token=os.getenv("TOKEN"))
+    bot = Bot(token=os.getenv("TOKENN"))
     dp = Dispatcher()
     dp.include_router(router)
     dp.include_router(callback_router)

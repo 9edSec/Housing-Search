@@ -1,6 +1,0 @@
-aiogram
-python-dotenv
-redis
-python-docouple
-aiosqlite
-sqlalchemy
